@@ -145,6 +145,38 @@ class Tricks:
                 self.tricks[j] = False
             j += 1
 
+@proposition(E)
+class Win:
+    def __init__(self, tricks_instance):
+
+        #Define propositions for winning conditions (winning 3, 4, or 5 tricks)
+        self.W3 = BasicPropositions("W3")
+        self.W4 = BasicPropositions("W4")
+        self.W5 = BasicPropositions("W5")
+
+        #Count the number of tricks won by team X using the tricks dictionary from the Tricks instance
+        x_wins = sum(1 for j in tricks_instance.tricks if tricks_instance.tricks[j])
+
+        self.W3 = (x_wins >= 3)
+        self.W4 = (x_wins >= 4)
+        self.W5 = (x_wins == 5)
+
+
+        #Define Win_Wt as the logical OR of W3, W4, and W5
+        self.Win_Wt = self.W3 | self.W4 | self.W5
+
+
+
+@proposition(E)
+class Euchre:
+    def __init__(self, win_instance, trump_instance):
+        
+        self.W = win_instance.win_Wt
+        self.C = trump_instance.Q
+
+        #Define Euchre condition: E is True if W is false and C is true
+        self.E = self.C & ~self.W
+
 
 # Different classes for propositions are useful because this allows for more dynamic constraint creation
 # for propositions within that class. For example, you can enforce that "at least one" of the propositions
