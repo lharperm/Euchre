@@ -42,8 +42,7 @@ suitMap = {1: "hearts", 2: "diamonds", 3: "spades", 4: "clubs"}
 
 def deal(deck):
     while True:
-        s = random.randint(1, 4)  #Randomly pick a suit
-        suit = suitMap[s]    #Map random number to suit
+        suit = suitMap[random.randint(1, 4)]    #Map random number to suit
         v = random.randint(1, 6)  #Randomly pick a value
 
         if v in deck[suit]:      #Check card is still in deck 
@@ -69,16 +68,35 @@ for team, player, card in cardMap:
     teams[team][player][card]["type"] = suit
     teams[team][player][card]["value"] = value
 
+leftBower = {   #Define left bower 
+        "hearts": "diamonds",
+        "diamonds": "hearts",
+        "spades": "clubs",
+        "clubs": "spades"
+}
 
-tricks = {"t1": False, "t2": False, "t3": False, "t4": False, "t5": False, }  #Initialize each trick to false
+def trump():
+    t = suitMap[random.randint(1, 4)] #Define trump suit
+    lb = leftBower[t] #Define bower
 
+    for team in teams: #Update card type to trump if players card is trump
+        for player in teams[team]:
+            for card in teams[team][player]:
+                type = teams[team][player][card]["type"]
+                v = teams[team][player][card]["value"]
 
+                if type == t:   #if type matches trump
+                    teams[team][player][card]["type"] = "trump"
+                
+                if  (type == lb and v == 3):   #if card is left bower update its value and type
+                    teams[team][player][card]["type"] = "trump"
+                    teams[team][player][card]["value"] = 7
 
+trumpRank = [1, 2, 4, 5, 6, 7, 3]   #Define trump hiearchy, 7 is left bower
 
-# Encoding that will store all of your constraints
+# Encoding that stores constraints
 E = Encoding()
 
-# To create propositions, create classes for them first, annotated with "@proposition" and the Encoding
 @proposition(E)
 class BasicPropositions:
 
@@ -87,6 +105,45 @@ class BasicPropositions:
 
     def _prop_name(self):
         return f"A.{self.data}"
+    
+
+#Define Variables
+Q = BasicPropositions("Q")
+T = BasicPropositions("T")   
+W = BasicPropositions("W")
+E = BasicPropositions("E")
+P = BasicPropositions("P")
+C = BasicPropositions("C")
+S = BasicPropositions("S")
+t = BasicPropositions("t")
+L = BasicPropositions("L")
+
+@proposition(E)
+class CalledTrump:
+    def __init__(self):
+        self.Q = BasicPropositions("Q")
+        self.i = random.randint(0, 1)
+        
+        # Set Q based on random value
+        if self.i == 1:
+            self.Q = True
+        else:
+            self.Q = False
+
+@proposition(E)           
+class Tricks:
+    def __init__(self):
+        self.T = BasicPropositions("T")  
+        self.tricks = {} 
+
+        j = 1
+        while j <= 3:  # Define winning team for tricks 1-3, True = X, False = Y
+            self.i = random.randint(0, 1)  # Generate random result
+            if self.i == 1:
+                self.tricks[j] = True
+            else:
+                self.tricks[j] = False
+            j += 1
 
 
 # Different classes for propositions are useful because this allows for more dynamic constraint creation
@@ -105,15 +162,7 @@ class FancyPropositions:
         return f"A.{self.data}"
 
 # Call your variables whatever you want
-a = BasicPropositions("a")
-b = BasicPropositions("b")   
-c = BasicPropositions("c")
-d = BasicPropositions("d")
-e = BasicPropositions("e")
-# At least one of these will be true
-x = FancyPropositions("x")
-y = FancyPropositions("y")
-z = FancyPropositions("z")
+
 
 
 # Build an example full theory for your setting and return it.
