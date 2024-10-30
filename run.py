@@ -179,6 +179,15 @@ class Euchre:
         #Define Euchre condition: E is True if W is false and C is true
         self.E = self.C & ~self.W
 
+@proposition(E)
+class Lead:
+    def __init__(self, tricks_instance):
+        self.L = BasicPropositions("L")
+        self.L = False #Lead is false unless tricks[3] is true(Team x won trick 3)
+
+        if tricks_instance.tricks[3] == True: # checks if team x won trick 3
+            self.L = True
+
 
 # Different classes for propositions are useful because this allows for more dynamic constraint creation
 # for propositions within that class. For example, you can enforce that "at least one" of the propositions
