@@ -134,15 +134,15 @@ class CalledTrump:
 class Tricks:
     def __init__(self):
         self.T = BasicPropositions("T")  
-        self.tricks = {} 
+        self.tricks = []
 
         j = 1
         while j <= 3:  # Define winning team for tricks 1-3, True = X, False = Y
             self.i = random.randint(0, 1)  # Generate random result
             if self.i == 1:
-                self.tricks[j] = True
+                self.tricks.append(True)
             else:
-                self.tricks[j] = False
+                self.tricks.append(False)
             j += 1
 
 @proposition(E)
@@ -155,7 +155,9 @@ class Win:
         self.W5 = BasicPropositions("W5")
 
         #Count the number of tricks won by team X using the tricks dictionary from the Tricks instance
-        x_wins = sum(1 for j in tricks_instance.tricks if tricks_instance.tricks[j])
+        for val in tricks_instance:
+            if val == True:
+                x_wins += 1
 
         self.W3 = (x_wins >= 3)
         self.W4 = (x_wins >= 4)
