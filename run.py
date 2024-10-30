@@ -2,9 +2,78 @@
 from bauhaus import Encoding, proposition, constraint
 from bauhaus.utils import count_solutions, likelihood
 
+import random
+
 # These two lines make sure a faster SAT solver is used.
 from nnf import config
 config.sat_backend = "kissat"
+
+teams = {    #Dictionary to store teams, players, and their cards
+    "teamX": {
+        "player1": {
+            "card1": {"type": "", "value": ""},
+            "card2": {"type": "", "value": ""}
+        },
+        "player3": {
+            "card1": {"type": "", "value": ""},
+            "card2": {"type": "", "value": ""}
+        }
+    },
+    "teamY": {
+        "player2": {
+            "card1": {"type": "", "value": ""},
+            "card2": {"type": "", "value": ""}
+        },
+        "player4": {
+            "card1": {"type": "", "value": ""},
+            "card2": {"type": "", "value": ""}
+        }
+    }
+}    #Example acess: teams["teamX"]["player1"]["card1"]["type"]
+
+deck = {
+    "hearts": [1, 2, 3, 4, 5, 6],
+    "diamonds": [1, 2, 3, 4, 5, 6],
+    "spades": [1, 2, 3, 4, 5, 6],
+    "clubs": [1, 2, 3, 4, 5, 6]
+}
+
+suitMap = {1: "hearts", 2: "diamonds", 3: "spades", 4: "clubs"}
+
+def deal(deck):
+    while True:
+        s = random.randint(1, 4)  #Randomly pick a suit
+        suit = suitMap[s]    #Map random number to suit
+        v = random.randint(1, 6)  #Randomly pick a value
+
+        if v in deck[suit]:      #Check card is still in deck 
+            deck[suit].remove(v)     #Update deck
+            return suit, v  
+    
+
+#Assign player cards
+cardMap = [
+    ("teamX", "player1", "card1"),
+    ("teamX", "player1", "card2"),
+    ("teamY", "player2", "card1"),
+    ("teamY", "player2", "card2"),
+    ("teamX", "player3", "card1"),
+    ("teamX", "player3", "card2"),
+    ("teamY", "player4", "card1"),
+    ("teamY", "player4", "card2")
+]
+
+# Assign cards to each player
+for team, player, card in cardMap:
+    suit, value = deal(deck)
+    teams[team][player][card]["type"] = suit
+    teams[team][player][card]["value"] = value
+
+
+tricks = {"t1": False, "t2": False, "t3": False, "t4": False, "t5": False, }  #Initialize each trick to false
+
+
+
 
 # Encoding that will store all of your constraints
 E = Encoding()
