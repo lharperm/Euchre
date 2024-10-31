@@ -133,6 +133,12 @@ P4_c = BasicPropositions("P4_c")
 T_TeamX = BasicPropositions("T_TeamX")
 T_TeamY = BasicPropositions("T_TeamY")
 
+T1 = BasicPropositions("T1")
+T2 = BasicPropositions("T2")
+T3 = BasicPropositions("T3")
+T4 = BasicPropositions("T4")
+T5 = BasicPropositions("T5")
+
 @proposition(E)
 class CalledTrump:
     def __init__(self):
@@ -252,6 +258,26 @@ def constraints():
 
     E.add_constraint(winning_card_constraint)
 
+
+    # Construct the win conditions
+    win_3_tricks = T1 & T2 & T3
+    win_4_tricks = T1 & T2 & T3 & T4
+    win_5_tricks = T1 & T2 & T3 & T4 & T5
+
+    # Combine the possibilities
+    win_round_condition = win_3_tricks | win_4_tricks | win_5_tricks
+
+    # Express the equivalence between W and the win conditions
+    win_round_equivalence = (W >> win_round_condition) & (win_round_condition >> W)
+    E.add_constraint(win_round_equivalence)
+
+    euchre_condition = (W & ~C) | (~W & C)
+
+    # Ensure E is true if and only if the euchre condition holds
+    euchre_equivalence = (E >> euchre_condition) & (euchre_condition >> E)
+    E.add_constraint(euchre_equivalence)
+
+    return E
 
 
 # Different classes for propositions are useful because this allows for more dynamic constraint creation
