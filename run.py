@@ -118,6 +118,21 @@ S = BasicPropositions("S")
 t = BasicPropositions("t")
 L = BasicPropositions("L")
 
+
+C1_vprime = BasicPropositions("C1_vprime")  
+C2_vprime = BasicPropositions("C2_vprime")  
+
+
+    # Define propositions for players holding the winning card
+P1_c = BasicPropositions("P1_c")
+P2_c = BasicPropositions("P2_c")
+P3_c = BasicPropositions("P3_c")
+P4_c = BasicPropositions("P4_c")
+
+# Define propositions for teams winning the trick
+T_TeamX = BasicPropositions("T_TeamX")
+T_TeamY = BasicPropositions("T_TeamY")
+
 @proposition(E)
 class CalledTrump:
     def __init__(self):
@@ -221,6 +236,22 @@ class Lead:
 
         if tricks_instance.tricks[3] == True: # checks if team x won trick 3
             self.L = True
+
+
+
+def constraints():
+
+    constraint_expression1 = C1_vprime | (~C1_vprime & C2_vprime)
+
+    E.add_constraint(constraint_expression1)
+
+    constraint_TeamX = T_TeamX >> (P1_c | P3_c)
+    constraint_TeamY = T_TeamY >> (P2_c | P4_c)
+
+    winning_card_constraint = constraint_TeamX & constraint_TeamY
+
+    E.add_constraint(winning_card_constraint)
+
 
 
 # Different classes for propositions are useful because this allows for more dynamic constraint creation
