@@ -145,6 +145,8 @@ class Tricks:
                 self.tricks.append(False)
             j += 1
 
+
+
 @proposition(E)
 class Win:
     def __init__(self, tricks_instance):
@@ -178,6 +180,38 @@ class Euchre:
 
         #Define Euchre condition: E is True if W is false and C is true
         self.E = self.C & ~self.W
+
+class IsTrump:
+    def __init__(self, suit, trump_suit):
+        self.suit = suit  # suit of the card being checked
+        self.trump_suit = trump_suit  # current trump suit
+
+    def is_trump(self):
+        return self.suit == self.trump_suit  # true if the current card is of trump suit
+
+@proposition(E)
+class IsSuit:
+    def __init__(self, team, player, card, lead_suit):
+        self.card_suit = teams[team][player][card]["type"]  # Get the suit from the teams dictionary
+        self.lead_suit = lead_suit  # Lead suit for the current trick
+
+    def is_on_suit(self):
+        # Return True only if the current card's suit matches the lead suit
+        return self.card_suit == self.lead_suit
+
+@proposition(E)
+class PlayerHasWinningCard:
+    def __init__(self, team, player, card, winning_card):
+        # Check if the player is on Team X and holds the winning card
+        self.is_team_x = team == "teamX"
+        self.card_type = teams[team][player][card]["type"]
+        self.card_value = teams[team][player][card]["value"]
+        self.winning_card = winning_card  # Tuple (type, value) of winning card
+
+    def has_winning_card(self):
+        # Return True if the player is on Team X and holds the winning card
+        return self.is_team_x and (self.card_type, self.card_value) == self.winning_card
+
 
 @proposition(E)
 class Lead:
