@@ -191,6 +191,7 @@ class Euchre:
         #Define Euchre condition: E is True if W is false and C is true
         self.E = self.C & ~self.W
 
+@proposition(E)
 class IsTrump:
     def __init__(self, suit, trump_suit):
         self.suit = suit  # suit of the card being checked
