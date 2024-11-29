@@ -233,6 +233,24 @@ class Lead:
         if tricks_instance.tricks[3] == True: # checks if team x won trick 3
             self.L = True
 
+@proposition(E)
+class Card:
+    def __init__(self, type, value, trick):
+        self.C = BasicPropositions("C")
+        self.card_type = card_type
+        self.rank = rank
+        self.trick_number = trick_number
+
+    def is_winning(self):
+        if self.card_type == 1:
+            return self.rank in trumpRank and self.trick_number in [4,5]
+        elif self.card_type == 2:
+            return self.rank and self.trick_number in [4,5] # 
+        else:
+            return False # If the card is offsuit and not the suit that was led, it can't win
+
+        
+
 
 # Different classes for propositions are useful because this allows for more dynamic constraint creation
 # for propositions within that class. For example, you can enforce that "at least one" of the propositions
