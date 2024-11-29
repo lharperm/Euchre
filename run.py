@@ -348,6 +348,7 @@ class Card:
 
 W = BasicPropositions("W")
 C = BasicPropositions("C")
+E_euchre = BasicPropositions("E")
 
 @constraint.at_least_one(E)
 @proposition(E)
@@ -403,17 +404,21 @@ def constraints():
 
                 # Add constraint: If a card is played, it must follow the lead suit if the lead suit exists and the player has a card in that suit
                 E.add_constraint(card_played >> ((~has_lead_suit) | follows_suit))
-    """
-    Implement winning card constraint here
-    """
+    
+    # Winning card constraint
+    # WinningCard ↔ (C1_v′ ∨ (¬C1_v′ ∧ C2_v′))
+    winning_card_equivalence = (WinningCard >> (C1_vprime | (~C1_vprime & C2_vprime))) & ((C1_vprime | (~C1_vprime & C2_vprime)) >> WinningCard)
+    E.add_constraint(winning_card_equivalence)
 
-    """
-    Implment winning team constraint here
-    """
+    # TeamX <->(P1_c v P3_c)
+    teamX_winning_constraint = (T_TeamX >> (P1_c | P3_c)) & ((P1_c | P3_c) >> T_TeamX)
+    E.add_constraint(teamX_winning_constraint)
 
-    """
-    Implement euchre constraint here
-    """
+    # Euchre restraint 
+    # E ↔ ((W ∧ ¬C) ∨ (¬W ∧ C))
+    euchre_condition = (W & ~C) | (~W & C)
+    euchre_equivalence = (E_euchre >> euchre_condition) & (euchre_condition >> E_euchre)
+    E.add_constraint(euchre_equivalence)
 
     return E
 
