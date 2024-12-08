@@ -1,8 +1,9 @@
 # CISC/CMPE 204 Modelling Project
 
-Welcome to the major project for CISC/CMPE 204!
+Welcome to our modelling project modelling the classic card game Euchre!
 
-Change this README.md file to summarize your project, and provide pointers to the general structure of the repository. How you organize and build things (which files, how you structure things, etc) is entirely up to you! The only things you must keep in place are what is already listed in the **Structure** section below.
+This modeling project aims to determine whether or not a euchre can occur in the popular card game Euchre (when one team wins a round but does not call trump!). Based on the outcome of the first three tricks in a hand of Euchre, the trump suit, and the team that called Trump, our model will analyze the gameplay of tricks 4 and 5 to see if a Euchre takes place. This project was written in Python using Bauhaus and the CISC 204 library. Its current stage allows for the calling team to be set to either team or team and for the trump suit to be any of the possible four suits. Enjoy!
+
 
 ## Structure
 
